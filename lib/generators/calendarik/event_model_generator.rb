@@ -12,7 +12,7 @@ module Calendarik
     source_root File.expand_path('../templates', __FILE__)
 
     def create_event_model_files
-      Calendarik::GeneratorHelpers.full_klass_name_for_event = klass + "Event"
+      Calendarik::GeneratorHelpers.full_klass_name_for_event = klass
       template("event_model.rb.erb", model_file_name)
       template("create_event_model_migration.rb.erb", migration_file_name)
     end

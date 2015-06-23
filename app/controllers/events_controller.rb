@@ -82,10 +82,10 @@ class EventsController < ApplicationController
   private
 
   def event_params
-    params.require(params[:event_type] + "_event").permit(@event_klass.columns.map(&:name) + [:period, :frequency, :update_format])
+    params.require(params[:event_type]).permit(@event_klass.columns.map(&:name) + [:period, :frequency, :update_format])
   end
 
   def take_event_constant
-    @event_klass = Object.const_get(params[:event_type].capitalize + "Event")
+    @event_klass = Object.const_get(params[:event_type].capitalize)
   end
 end
