@@ -1,0 +1,28 @@
+<%= form_for @event, url: event_path(id: @event.id), html: { id: 'event_form' } do |f| %>
+
+  <%= render :partial => "shared/events/#{@event_klass.to_s.underscore}_form", :locals => { :f => f }  rescue nil %>
+
+  <p>
+    <%= f.label :start_time %>
+    <br/>
+    <%= f.datetime_select :start_time %>
+  </p>
+  <p>
+    <%= f.label :end_time %>
+    <br/>
+    <%= f.datetime_select :end_time %>
+  </p>
+  <p>
+    <%= f.label :free_day %>
+    <%= f.check_box :free_day %>
+  </p>
+  <p>
+    <% if @event.recurring? %>
+      <%= f.select :update_format, options_for_select('Обновить только это событие' => 'update_self', 'Обновить все подобные события' => 'same_events', 'Обновить все будущие события' => 'future_same_events') %>
+    <% end -%>
+
+    <%= f.submit :update %>
+
+    <span id = "updating_events" class="spinner" style = "display:none;">Обновляем, Подождите...</span>
+  </p>
+<% end %>
