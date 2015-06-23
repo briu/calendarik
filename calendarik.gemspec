@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.email       = ["balalaukin@gmail.com"]
   s.homepage    = "TODO"
   s.summary     = "TODO: Summary of Calendarik."
-  s.description = "TODO: Description of Calendarik."
+  s.description = "Fullcalendar-Engine fork."
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
