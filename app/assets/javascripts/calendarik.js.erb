@@ -1,6 +1,7 @@
 //= require moment
 //= require fullcalendar
 //= require jquery-ui/dialog
+
   $(document).ready(function(){
     
     fullcalendar_options = <%= Calendarik::Config.to_json.html_safe %>;
