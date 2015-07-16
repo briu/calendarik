@@ -86,6 +86,6 @@ class EventsController < ApplicationController
   end
 
   def take_event_constant
-    @event_klass = Object.const_get(params[:event_type].capitalize)
+    @event_klass = Object.const_get(params[:event_type].camelize)
   end
 end
