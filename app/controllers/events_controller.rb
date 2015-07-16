@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  before_filter :take_event_constant
+  before_filter :take_event_constant, only: [:new, :create, :index, :get_events, :move, :resize, :edit, :update, :destroy]
 
   def new
     if params[:event_click_date].present?
