@@ -4,7 +4,8 @@
   var ready;
   ready = function() {
     
-    fullcalendar_options = <%= Calendarik::Config.to_json.html_safe %>;
+    var fullcalendar_options = <%= Calendarik::Config.to_json.html_safe %>;
+
     $.extend(fullcalendar_options, {
       events: $('#default_link_path').attr('path') + "/get_events",
       loading: function(bool){
@@ -53,7 +54,7 @@
       }
     })
 
-    $('#new_event').click(function(event) {
+    $('#new_event').on('click', function(event) {
       event.preventDefault();
       var url = $('#default_link_path').attr('path') + "/new";
       $.ajax({
@@ -76,7 +77,7 @@
       });
     });
 
-    $('#calendar').fullCalendar(fullcalendar_options)
+    $('#calendar').fullCalendar(fullcalendar_options);
 
     $('#create_event_dialog, #desc_dialog').on('submit', "#event_form", function(event) {
       var $spinner = $('.spinner');
@@ -130,8 +131,7 @@
         $('#delete_event').html("&nbsp; <a href = 'javascript:void(0);' onclick ='deleteEvent(" + event.id + ", " + false + ")'>Удалить только эту дату</a>");
         $('#delete_event').append("&nbsp;&nbsp; <a href = 'javascript:void(0);' onclick ='deleteEvent(" + event.id + ", " + true + ")'>Удалить всю серию событий</a>")
         $('#delete_event').append("&nbsp;&nbsp; <a href = 'javascript:void(0);' onclick ='deleteEvent(" + event.id + ", \"future\")'>Удалить все последующие события</a>")
-      }
-      else {
+      } else {
         title = event.title;
         $('#delete_event').html("<a href = 'javascript:void(0);' onclick ='deleteEvent(" + event.id + ", " + false + ")'>Удалить</a>");
       }
@@ -192,7 +192,7 @@
           $('#frequency').hide();
       }
     }
-  });
+  }
 
   $(document).ready(ready);
   $(document).on('page:load', ready);
