@@ -65,7 +65,7 @@
           $('#loading').hide();
         },
         success: function(data) {
-          $('#create_event').replaceWith(data['form']).trigger('change');
+          $('#create_event').replaceWith(data['form']);
           $('#create_event_dialog').dialog({
             title: 'Новое событие',
             modal: true,
@@ -151,7 +151,7 @@
     jQuery.ajax({
       url: $('#default_link_path').attr('path') + "/" + event_id + "/edit",
       success: function(data) {
-        $('#event_desc').html(data['form']);
+        $('#event_desc').html(data['form']).trigger('change');
       }
     });
   }
