@@ -21,7 +21,7 @@
       <%= f.select :update_format, options_for_select('Обновить только это событие' => 'update_self', 'Обновить все подобные события' => 'same_events', 'Обновить все будущие события' => 'future_same_events') %>
     <% end -%>
 
-    <%= f.submit :update %>
+    <%= f.submit %>
 
     <span id = "updating_events" class="spinner" style = "display:none;">Обновляем, Подождите...</span>
   </p>
