@@ -1,8 +1,8 @@
 //= require moment
 //= require fullcalendar
 //= require jquery-ui/dialog
-
-  $(document).ready(function(){
+  var ready;
+  ready = function() {
     
     fullcalendar_options = <%= Calendarik::Config.to_json.html_safe %>;
     $.extend(fullcalendar_options, {
@@ -13,15 +13,15 @@
         else
           $('#loading').hide();
       },
-      eventDrop: function(event, delta, revertFunc, jsEvent){
+      eventDrop: function(event, delta, revertFunc, jsEvent) {
         moveEvent(event, delta);
       },
 
-      eventResize: function(event, delta, revertFunc, jsEvent){
+      eventResize: function(event, delta, revertFunc, jsEvent) {
         resizeEvent(event, delta);
       },
 
-      eventClick: function(event, jsEvent, view){
+      eventClick: function(event, jsEvent, view) {
         showEventDetails(event);
       },
 
@@ -47,7 +47,7 @@
       },
 
       eventRender: function(event, element) {
-        if(event.freeDay){
+        if(event.freeDay) {
           element.css('background-color', '#FF0000', 'opacity', '0.7');
         }
       }
@@ -103,94 +103,98 @@
         alert(xhr.responseText);
       }
     })
+
+    function moveEvent(event, delta) {
+      jQuery.ajax({
+        data: 'id=' + event.id + '&day_delta=' + delta._data.days + '&minute_delta=' + delta._data.minutes + '&hour_delta=' + delta._data.hours,
+        dataType: 'script',
+        type: 'post',
+        url: $('#default_link_path').attr('path') + "/move"
+      });
+    }
+
+    function resizeEvent(event, delta) {
+      jQuery.ajax({
+        data: 'id=' + event.id + '&day_delta=' + delta._data.days  + '&minute_delta=' + delta._data.minutes + '&hour_delta=' + delta._data.hours,
+        dataType: 'script',
+        type: 'post',
+        url: $('#default_link_path').attr('path') + "/resize"
+      });
+    }
+
+    function showEventDetails(event) {
+      $('#event_desc').html(event.description);
+      $('#edit_event').html("<a href = 'javascript:void(0);' onclick ='editEvent(" + event.id + ")'>Редактировать</a>");
+      if (event.recurring) {
+        title = event.title + "(Повторяющиеся)";
+        $('#delete_event').html("&nbsp; <a href = 'javascript:void(0);' onclick ='deleteEvent(" + event.id + ", " + false + ")'>Удалить только эту дату</a>");
+        $('#delete_event').append("&nbsp;&nbsp; <a href = 'javascript:void(0);' onclick ='deleteEvent(" + event.id + ", " + true + ")'>Удалить всю серию событий</a>")
+        $('#delete_event').append("&nbsp;&nbsp; <a href = 'javascript:void(0);' onclick ='deleteEvent(" + event.id + ", \"future\")'>Удалить все последующие события</a>")
+      }
+      else {
+        title = event.title;
+        $('#delete_event').html("<a href = 'javascript:void(0);' onclick ='deleteEvent(" + event.id + ", " + false + ")'>Удалить</a>");
+      }
+      $('#desc_dialog').dialog({
+        title: title,
+        modal: true,
+        width: 500,
+        close: function(event, ui){
+          $('#desc_dialog').dialog('destroy')
+        }
+      });
+    }
+
+    function editEvent(event_id) {
+      jQuery.ajax({
+        url: $('#default_link_path').attr('path') + "/" + event_id + "/edit",
+        success: function(data) {
+          $('#event_desc').html(data['form']).trigger('change');
+        }
+      });
+    }
+
+    function deleteEvent(event_id, delete_all) {
+      jQuery.ajax({
+        data:  '&delete_all=' + delete_all,
+        dataType: 'script',
+        type: 'delete',
+        url: $('#default_link_path').attr('path') + "/" + event_id,
+        success: refetch_events_and_close_dialog
+      });
+    }
+
+    function refetch_events_and_close_dialog() {
+      $('#calendar').fullCalendar( 'refetchEvents' );
+      $('.dialog:visible').dialog('destroy');
+    }
+
+    function showPeriodAndFrequency(value) {
+      switch (value) {
+        case 'days':
+          $('#period').html('день');
+          $('#frequency').show();
+          break;
+        case 'weeks':
+          $('#period').html('неделя');
+          $('#frequency').show();
+          break;
+        case 'months':
+          $('#period').html('месяц');
+          $('#frequency').show();
+          break;
+        case 'years':
+          $('#period').html('год');
+          $('#frequency').show();
+          break;
+
+        default:
+          $('#frequency').hide();
+      }
+    }
   });
 
-  function moveEvent(event, delta){
-    jQuery.ajax({
-      data: 'id=' + event.id + '&day_delta=' + delta._data.days + '&minute_delta=' + delta._data.minutes + '&hour_delta=' + delta._data.hours,
-      dataType: 'script',
-      type: 'post',
-      url: $('#default_link_path').attr('path') + "/move"
-    });
-  }
+  $(document).ready(ready);
+  $(document).on('page:load', ready);
 
-  function resizeEvent(event, delta){
-    jQuery.ajax({
-      data: 'id=' + event.id + '&day_delta=' + delta._data.days  + '&minute_delta=' + delta._data.minutes + '&hour_delta=' + delta._data.hours,
-      dataType: 'script',
-      type: 'post',
-      url: $('#default_link_path').attr('path') + "/resize"
-    });
-  }
-
-  function showEventDetails(event){
-    $('#event_desc').html(event.description);
-    $('#edit_event').html("<a href = 'javascript:void(0);' onclick ='editEvent(" + event.id + ")'>Редактировать</a>");
-    if (event.recurring) {
-      title = event.title + "(Повторяющиеся)";
-      $('#delete_event').html("&nbsp; <a href = 'javascript:void(0);' onclick ='deleteEvent(" + event.id + ", " + false + ")'>Удалить только эту дату</a>");
-      $('#delete_event').append("&nbsp;&nbsp; <a href = 'javascript:void(0);' onclick ='deleteEvent(" + event.id + ", " + true + ")'>Удалить всю серию событий</a>")
-      $('#delete_event').append("&nbsp;&nbsp; <a href = 'javascript:void(0);' onclick ='deleteEvent(" + event.id + ", \"future\")'>Удалить все последующие события</a>")
-    }
-    else {
-      title = event.title;
-      $('#delete_event').html("<a href = 'javascript:void(0);' onclick ='deleteEvent(" + event.id + ", " + false + ")'>Удалить</a>");
-    }
-    $('#desc_dialog').dialog({
-      title: title,
-      modal: true,
-      width: 500,
-      close: function(event, ui){
-        $('#desc_dialog').dialog('destroy')
-      }
-    });
-  }
-
-
-  function editEvent(event_id){
-    jQuery.ajax({
-      url: $('#default_link_path').attr('path') + "/" + event_id + "/edit",
-      success: function(data) {
-        $('#event_desc').html(data['form']).trigger('change');
-      }
-    });
-  }
-
-  function deleteEvent(event_id, delete_all){
-    jQuery.ajax({
-      data:  '&delete_all=' + delete_all,
-      dataType: 'script',
-      type: 'delete',
-      url: $('#default_link_path').attr('path') + "/" + event_id,
-      success: refetch_events_and_close_dialog
-    });
-  }
-
-  function refetch_events_and_close_dialog() {
-    $('#calendar').fullCalendar( 'refetchEvents' );
-    $('.dialog:visible').dialog('destroy');
-  }
-
-  function showPeriodAndFrequency(value){
-    switch (value) {
-      case 'days':
-        $('#period').html('день');
-        $('#frequency').show();
-        break;
-      case 'weeks':
-        $('#period').html('неделя');
-        $('#frequency').show();
-        break;
-      case 'months':
-        $('#period').html('месяц');
-        $('#frequency').show();
-        break;
-      case 'years':
-        $('#period').html('год');
-        $('#frequency').show();
-        break;
-
-      default:
-        $('#frequency').hide();
-    }
-}
+  
