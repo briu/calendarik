@@ -65,7 +65,7 @@
           $('#loading').hide();
         },
         success: function(data) {
-          $('#create_event').replaceWith(data['form']);
+          $('#create_event').replaceWith(data['form']).trigger('change');
           $('#create_event_dialog').dialog({
             title: 'Новое событие',
             modal: true,
