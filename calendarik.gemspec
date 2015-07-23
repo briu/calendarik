@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.version     = Calendarik::VERSION
   s.authors     = ["Igor Biryukov"]
   s.email       = ["balalaukin@gmail.com"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of Calendarik."
+  s.homepage    = "https://github.com/briu/calendarik"
+  s.summary     = "fullcalendar integration with rails"
   s.description = "Fullcalendar-Engine fork."
   s.license     = "MIT"
 
