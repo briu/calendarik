@@ -108,7 +108,7 @@
 
   function moveEvent(event, delta) {
     jQuery.ajax({
-      data: 'id=' + event.id + '&day_delta=' + delta._data.days + '&minute_delta=' + delta._data.minutes + '&hour_delta=' + delta._data.hours,
+      data: 'id=' + event.id + '&day_delta=' + delta._days + '&minute_delta=' + delta._data.minutes + '&hour_delta=' + delta._data.hours,
       dataType: 'script',
       type: 'post',
       url: $('#default_link_path').attr('path') + "/move"

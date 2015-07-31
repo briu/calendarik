@@ -21,22 +21,19 @@ module Calendarik
 
       def change_column(column)
         raise ArgumentError, "column should be ActiveSupport::TimeWithZone" unless model_obj.send(column).is_a? ActiveSupport::TimeWithZone
-        #increase datetime_keys for datetime column by parameters with DateTime change method
-        model_obj.send(column.to_s + "=", model_obj.send(column).change(build_hash_with_datetime_values(column)))
+        update_time_values(column)
       end
 
-      def build_hash_with_datetime_values(column)
-        result = {}
-        datetime_keys.each do |key|
-          result[key] = model_obj.send(column).send(key) + values_for_update[key.to_s + "_delta"].to_i
+      def update_time_values(column)
+        datetime_keys.each do |params_key, pluralized_val|
+          model_obj.send(column.to_s + '=', 
+                         model_obj.send(column) + values_for_update[params_key.to_s + "_delta"].to_i.send(pluralized_val))
         end
-        result
       end
 
       def datetime_keys
-        [:year, :month, :day, :hour, :min, :sec]
+        { day: :days, hour: :hours, minute: :minutes, sec: :seconds }
       end
     end
-
   end
 end
